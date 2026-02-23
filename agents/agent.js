@@ -81,6 +81,21 @@ export class Agent {
       return await this.basicSearch(query);
     }
     
+    // Verificar si es una pregunta simple que no necesita búsqueda
+    if (!this.requiresInvestigation(query)) {
+      // Usar el cerebro sin búsqueda
+      const prompt = `Eres JARVIS, un asistente de IA útil y amigable.
+Usuario dice: "${query}"
+${context.history && context.history.length > 0 ? `\nContexto:\n${context.history.slice(-2).map(m => `${m.role === 'user' ? 'Usuario' : 'Tú'}: ${m.content}`).join('\n')}` : ''}
+Responde de manera breve y concisa.`;
+      
+      let response = await this.brain.think(prompt, context);
+      if (!response) {
+        response = await this.basicSearch(query);
+      }
+      return response;
+    }
+    
     // Investigar primero - siempre buscar en la web
     // (ya no dependemos de requiresInvestigation)
     let searchResults = [];
@@ -144,29 +159,47 @@ Instrucciones:
   }
   
   requiresInvestigation(message) {
+    // Preguntas que NO requieren investigación (respuestas rápidas)
+    const noSearchTriggers = [
+      'hola', 'buenos', 'buenas', 'hey', 'hi', 'hello',
+      'gracias', 'thank', 'por favor', 'please',
+      'cómo estás', 'como estas', 'qué tal', 'que tal',
+      'adiós', 'adios', 'bye', 'nos vemos',
+      'soy jarvis', 'yo soy', 'quién eres', 'quien eres',
+      'qué puedes hacer', 'que puedes hacer', 'ayuda',
+      'sí', 'si', 'ok', 'okay', 'bien', 'entendido',
+      'jaja', 'jeje', 'lol', '😂'
+    ];
+    
+    const msg = message.toLowerCase();
+    
+    // Si es una pregunta simple, no buscar
+    if (noSearchTriggers.some(trigger => msg.includes(trigger))) {
+      return false;
+    }
+    
     // Búsqueda más agresiva - casi todo requiere investigación
     const alwaysSearchTriggers = [
       'qué es', 'quién es', 'cuándo', 'dónde', 'cuál', 'cuáles',
-      'cómo', 'por qué', 'para qué', 'cuánto', 'cuántos'
+      'cómo', 'por qué', 'para qué', 'cuánto', 'cuántos',
+      'noticia', 'actual', 'nuevo', 'último', 'reciente',
+      'busca', 'investiga', 'encuentra'
     ];
     
     const investigationTriggers = [
       '¿por qué', 'por qué', 'cómo funciona', 'cómo se hace',
-      'explica', 'investig', 'dime sobre',
+      'explica', 'dime sobre',
       'qué sabes sobre', 'háblame de', 'necesito saber',
       'ayúdame a entender', 'puedo usar', 'diferencia entre',
       'pros y contras', 'ventajas', 'desventajas',
       'qué necesito', 'cómo empezar', 'cuál es mejor',
       'todo sobre', 'completo', 'guía', 'tutorial',
-      'problema', 'error', 'solucionar', 'noticia', 'actual',
-      'nuevo', 'último', 'reciente', 'información',
-      'busca', 'encuentra', 'dónde puedo', 'cómo obtener',
+      'problema', 'error', 'solucionar',
+      'información', 'dónde puedo', 'cómo obtener',
       'mejor', 'peor', 'top', 'ranking', 'comparación',
-      ' defin', 'concepto', 'significado', 'traducción',
+      'defin', 'concepto', 'significado', 'traducción',
       'enlace', 'link', 'página', 'sitio', 'web'
     ];
-    
-    const msg = message.toLowerCase();
     
     // Siempre buscar para preguntas de información
     if (alwaysSearchTriggers.some(trigger => msg.includes(trigger))) {

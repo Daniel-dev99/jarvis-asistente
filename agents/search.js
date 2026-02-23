@@ -11,27 +11,26 @@ export class WebSearcher {
   }
   
   async search(query, options = {}) {
-    const { maxResults = 8 } = options; // Más resultados por defecto
+    const { maxResults = 5 } = options; 
     let allResults = [];
     
-    // Intentar todos los proveedores y combinar resultados
-    for (const provider of this.providers) {
+    // Usar solo Tavily y DuckDuckGo para mayor velocidad
+    const providers = ['tavily', 'duckduckgo'];
+    
+    // Promise all con timeout
+    const timeout = (ms) => new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Timeout')), ms)
+    );
+    
+    for (const provider of providers) {
       try {
         let results = [];
-        switch (provider) {
-          case 'tavily':
-            results = await this.searchWithTavily(query, { maxResults: 5 });
-            break;
-          case 'duckduckgo':
-            results = await this.searchWithDuckDuckGo(query, { maxResults: 5 });
-            break;
-          case 'wikipedia':
-            results = await this.searchWikipedia(query, { maxResults: 3 });
-            break;
-          case 'bing':
-            results = await this.searchBing(query, { maxResults: 3 });
-            break;
-        }
+        const searchPromise = provider === 'tavily' 
+          ? this.searchWithTavily(query, { maxResults: 4 })
+          : this.searchWithDuckDuckGo(query, { maxResults: 4 });
+        
+        // 8 segundos de timeout por proveedor
+        results = await Promise.race([searchPromise, timeout(8000)]);
         
         if (results && results.length > 0) {
           allResults = [...allResults, ...results];
