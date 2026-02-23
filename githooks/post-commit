@@ -1,0 +1,11 @@
+#!/bin/sh
+# Post-commit hook: Automatically push to GitHub after each commit
+
+echo "🔄 pushing changes to GitHub..."
+git push origin main
+
+if [ $? -eq 0 ]; then
+    echo "✅ Changes pushed successfully to GitHub"
+else
+    echo "❌ Failed to push to GitHub"
+fi
