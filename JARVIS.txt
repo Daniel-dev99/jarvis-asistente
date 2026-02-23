@@ -1,0 +1,9 @@
+JARVIS
+
+1. Conectar ollama a internet
+2. Subir a GitHub para no perderlo
+3. Cambiar logo y css y nombre a JAR.VIS
+4. Chatear con base de conocimiento
+5. Un SystemHealth con antivirus
+6. Eliminar el anterior modelo llama3.2
+7. Sistema neuronal, guardar información para usarla después e investigar y entregar la mas actualizada

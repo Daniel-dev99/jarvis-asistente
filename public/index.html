@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JARVIS - Asistente de IA</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🤖</span>
+        <h1>JARVIS</h1>
+        <span class="status-indicator online" id="statusIndicator"></span>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon" id="clearHistoryBtn" title="Limpiar historial">
+          🗑️
+        </button>
+        <button class="btn-icon" id="settingsBtn" title="Configuración">
+          ⚙️
+        </button>
+      </div>
+    </header>
+    
+    <!-- Chat Container -->
+    <main class="chat-container" id="chatContainer">
+      <div class="welcome-message" id="welcomeMessage">
+        <div class="welcome-icon">👋</div>
+        <h2>¡Bienvenido a JARVIS!</h2>
+        <p>Soy tu asistente de inteligencia artificial. Puedo ayudarte con:</p>
+        <ul class="features-list">
+          <li>🔍 <strong>Búsqueda en internet</strong> - Investiga cualquier tema</li>
+          <li>📚 <strong>Base de conocimientos</strong> - Consulta tus documentos</li>
+          <li>📁 <strong>Archivos locales</strong> - Lee archivos de tu sistema</li>
+          <li>💬 <strong>Conversación contextual</strong> - Recuerdo lo que hablamos</li>
+        </ul>
+        <p class="hint">Envíame un mensaje para comenzar...</p>
+      </div>
+      
+      <div class="messages" id="messages"></div>
+      
+      <div class="typing-indicator" id="typingIndicator" style="display: none;">
+        <span></span><span></span><span></span>
+      </div>
+    </main>
+    
+    <!-- Input Area -->
+    <footer class="input-area">
+      <form id="chatForm" class="chat-form">
+        <input 
+          type="text" 
+          id="messageInput" 
+          placeholder="Escribe tu mensaje..." 
+          autocomplete="off"
+          autofocus
+        >
+        <button type="submit" class="send-btn" id="sendBtn">
+          ➤
+        </button>
+      </form>
+      <div class="quick-actions">
+        <button class="quick-btn" data-query="busca en internet últimas noticias de IA">📰 Noticias IA</button>
+        <button class="quick-btn" data-query="busca en internet tutorial de JavaScript">📚 Tutorial JS</button>
+        <button class="quick-btn" data-query="qué puedes hacer?">❓ Funciones</button>
+      </div>
+    </footer>
+    
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Configuración</h2>
+          <button class="close-btn" id="closeSettingsBtn">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <label for="tavilyApiKey">API Key de Tavily:</label>
+            <input type="password" id="tavilyApiKey" placeholder="Ingresa tu API key">
+          </div>
+          <div class="setting-group">
+            <button class="btn-primary" id="saveSettingsBtn">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
