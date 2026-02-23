@@ -108,5 +108,25 @@
     "role": "assistant",
     "content": "Para saber quién lidera actualmente la Liga Colombiana de Fútbol Masculina 2026, te recomiendo consultar directamente en [ESPN Deportes](https://www.espn.com) o en la página oficial de la [Liga BetPlay Dimayor](https://dimayor.com). Estas fuentes tienen la información más actualizada y detallada. Si necesitas ayuda con algo más, no dudes en preguntar.",
     "timestamp": "2026-02-23T17:18:48.730Z"
+  },
+  {
+    "role": "user",
+    "content": "Quiero que tu me digas",
+    "timestamp": "2026-02-23T17:45:45.152Z"
+  },
+  {
+    "role": "assistant",
+    "content": "¡Hola! ¿En qué puedo ayudarte hoy? Estoy aquí para resolver tus dudas o proporcionarte cualquier información que necesites.",
+    "timestamp": "2026-02-23T17:45:45.364Z"
+  },
+  {
+    "role": "user",
+    "content": "Jarvis, quien va de primero en la liga colombiana de futbol?",
+    "timestamp": "2026-02-23T17:47:33.370Z"
+  },
+  {
+    "role": "assistant",
+    "content": "Actualmente no tengo la información más reciente para decir quién lidera la Liga Colombiana de Fútbol. Te recomiendo consultar ESPN Deportes o la página oficial de Dimayor para obtener los detalles actuales. ¿Necesitas ayuda con algo más?",
+    "timestamp": "2026-02-23T17:47:33.372Z"
   }
 ]

@@ -52,7 +52,6 @@ export class Agent {
     }
     else {
       // Para todo lo demás, usar el cerebro con investigación
-      // Ahora siempre investigará en la web primero
       response = await this.thinkAndResearch(message, fullContext);
     }
     
@@ -74,7 +73,6 @@ export class Agent {
   
   // El cerebro pensa + investiga
   async thinkAndResearch(query, context) {
-    // Siempre investigar para dar mejores respuestas
     const brainAvailable = await this.brain.isAvailable();
     
     if (!brainAvailable) {
@@ -84,10 +82,10 @@ export class Agent {
     // Verificar si es una pregunta simple que no necesita búsqueda
     if (!this.requiresInvestigation(query)) {
       // Usar el cerebro sin búsqueda
-      const prompt = `Eres JARVIS, un asistente de IA útil y amigable.
-Usuario dice: "${query}"
-${context.history && context.history.length > 0 ? `\nContexto:\n${context.history.slice(-2).map(m => `${m.role === 'user' ? 'Usuario' : 'Tú'}: ${m.content}`).join('\n')}` : ''}
-Responde de manera breve y concisa.`;
+      const prompt = `Usuario dice: "${query}"
+${context.history && context.history.length > 0 ? `Contexto: ${context.history.slice(-2).map(m => `${m.role === 'user' ? 'Usuario' : 'JARVIS'}: ${m.content}`).join('\n')}` : ''}
+
+Responde de manera breve y directa.`;
       
       let response = await this.brain.think(prompt, context);
       if (!response) {
@@ -96,14 +94,12 @@ Responde de manera breve y concisa.`;
       return response;
     }
     
-    // Investigar primero - siempre buscar en la web
-    // (ya no dependemos de requiresInvestigation)
+    // Investigar primero
     let searchResults = [];
     try {
       searchResults = await this.searchWeb(query);
       context.searchResults = searchResults;
       
-      // Agregar info de proveedores al contexto
       if (searchResults.length > 0) {
         context.searchProviders = [...new Set(searchResults.map(r => r.provider))].join(', ');
       }
@@ -112,17 +108,15 @@ Responde de manera breve y concisa.`;
     }
     
     // Hacer que el cerebro piense con toda la información
-    const prompt = `Eres JARVIS, un asistente de IA avanzado con acceso a búsqueda web en tiempo real.
-Usuario pregunta: "${query}"
-${searchResults.length > 0 ? `\nInformación encontrada en la web (${context.searchProviders}):\n${searchResults.map(r => `[${r.provider.toUpperCase()}] ${r.title}: ${r.content}`).join('\n')}` : '\nNo se encontró información en la web.'}
-${context.history && context.history.length > 0 ? `\nContexto de la conversación:\n${context.history.slice(-3).map(m => `${m.role === 'user' ? 'Usuario' : 'Tú'}: ${m.content}`).join('\n')}` : ''}
+    const prompt = `Usuario pregunta: "${query}"
 
-Instrucciones:
-1. Si encontraste información relevante, sintetízala y preséntala de manera clara
-2. Cita las fuentes cuando sea apropiado
-3. Si la información no es suficiente, indica qué más podrías buscar
-4. Responde de manera completa y útil en español`;
-    
+${searchResults.length > 0 ? `Resultados de busqueda:
+${searchResults.map(r => `- ${r.title}: ${r.content}`).join('\n')}` : 'No hay resultados de busqueda.'}
+
+${context.history && context.history.length > 0 ? `Contexto: ${context.history.slice(-2).map(m => `${m.role === 'user' ? 'Usuario' : 'JARVIS'}: ${m.content}`).join('\n')}` : ''}
+
+Da la respuesta directamente usando los resultados. No digas "segun", "basado en", o muestres tu razonamiento. Simplemente responde.`;
+
     let response = await this.brain.think(prompt, context);
     
     // Si el cerebro falla, usar búsqueda básica
@@ -141,72 +135,55 @@ Instrucciones:
       return `No encontré información sobre "${query}". ¿Podrías ser más específico?`;
     }
     
-    // Agrupar por proveedor
     const providers = [...new Set(searchResults.map(r => r.provider))].join(', ');
     
-    let response = `🔍 **Resultados de búsqueda** (fuentes: ${providers}):\n\n`;
+    let response = `Resultados de búsqueda (${providers}):\n\n`;
     
-    searchResults.slice(0, 5).forEach((result, i) => {
-      response += `**${i + 1}. ${result.title}** [${result.provider}]\n`;
-      response += `${result.content}\n`;
-      if (result.url) {
-        response += `[Ver fuente](${result.url})\n`;
-      }
-      response += '\n';
+    searchResults.slice(0, 3).forEach((result, i) => {
+      response += `${i + 1}. ${result.title}\n${result.content}\n\n`;
     });
     
     return response;
   }
   
   requiresInvestigation(message) {
-    // Preguntas que NO requieren investigación (respuestas rápidas)
-    const noSearchTriggers = [
-      'hola', 'buenos', 'buenas', 'hey', 'hi', 'hello',
-      'gracias', 'thank', 'por favor', 'please',
-      'cómo estás', 'como estas', 'qué tal', 'que tal',
-      'adiós', 'adios', 'bye', 'nos vemos',
-      'soy jarvis', 'yo soy', 'quién eres', 'quien eres',
-      'qué puedes hacer', 'que puedes hacer', 'ayuda',
-      'sí', 'si', 'ok', 'okay', 'bien', 'entendido',
-      'jaja', 'jeje', 'lol', '😂'
-    ];
-    
     const msg = message.toLowerCase();
     
-    // Si es una pregunta simple, no buscar
-    if (noSearchTriggers.some(trigger => msg.includes(trigger))) {
-      return false;
-    }
-    
-    // Búsqueda más agresiva - casi todo requiere investigación
-    const alwaysSearchTriggers = [
-      'qué es', 'quién es', 'cuándo', 'dónde', 'cuál', 'cuáles',
-      'cómo', 'por qué', 'para qué', 'cuánto', 'cuántos',
-      'noticia', 'actual', 'nuevo', 'último', 'reciente',
-      'busca', 'investiga', 'encuentra'
-    ];
-    
-    const investigationTriggers = [
-      '¿por qué', 'por qué', 'cómo funciona', 'cómo se hace',
-      'explica', 'dime sobre',
-      'qué sabes sobre', 'háblame de', 'necesito saber',
-      'ayúdame a entender', 'puedo usar', 'diferencia entre',
-      'pros y contras', 'ventajas', 'desventajas',
-      'qué necesito', 'cómo empezar', 'cuál es mejor',
-      'todo sobre', 'completo', 'guía', 'tutorial',
-      'problema', 'error', 'solucionar',
-      'información', 'dónde puedo', 'cómo obtener',
-      'mejor', 'peor', 'top', 'ranking', 'comparación',
-      'defin', 'concepto', 'significado', 'traducción',
-      'enlace', 'link', 'página', 'sitio', 'web'
-    ];
-    
-    // Siempre buscar para preguntas de información
-    if (alwaysSearchTriggers.some(trigger => msg.includes(trigger))) {
+    // SIEMPRE buscar si tiene signo de interrogación
+    if (msg.includes('?') || msg.includes('¿')) {
       return true;
     }
     
-    return investigationTriggers.some(trigger => msg.includes(trigger));
+    // NO buscar si es solo un saludo
+    const noSearchTriggers = [
+      'hola', 'buenos', 'buenas', 'hey', 'hi', 'hello',
+      'gracias', 'thank', 'por favor', 'please',
+      'como estas', 'que tal', 'buen dia', 'buenas noches', 'buenas tardes',
+      'adios', 'bye', 'nos vemos',
+      'soy jarvis', 'yo soy', 'quien eres', 'que eres',
+      'que puedes hacer', 'ayuda',
+      'si', 'ok', 'okay', 'bien', 'entendido',
+      'jaja', 'jeje', 'lol'
+    ];
+    
+    if (noSearchTriggers.some(trigger => msg === trigger || msg.startsWith(trigger + ' ') || msg.endsWith(' ' + trigger))) {
+      return false;
+    }
+    
+    // Buscar si contiene palabras de pregunta
+    const questionWords = ['que es', 'quien es', 'cuando', 'donde', 'cual', 'cuales', 'como', 'por que', 'para que', 'cuanto', 'cuantos', 'porque', 'definicion'];
+    if (questionWords.some(word => msg.includes(word))) {
+      return true;
+    }
+    
+    // Buscar para temas de información
+    const infoTriggers = ['noticia', 'actual', 'nuevo', 'ultimo', 'reciente', 'busca', 'investiga', 'encuentra', 'google', 'wikipedia'];
+    if (infoTriggers.some(trigger => msg.includes(trigger))) {
+      return true;
+    }
+    
+    // Por defecto, buscar
+    return true;
   }
   
   needsWebSearch(message) {
