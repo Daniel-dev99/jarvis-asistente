@@ -6,11 +6,16 @@ export class Brain {
     this.model = options.model || 'deepseek-r1:32b';
     this.baseUrl = options.baseUrl || 'http://localhost:11434';
     this.temperature = options.temperature || 0.7;
-    this.systemPrompt = `Eres JARVIS, un asistente de IA inteligente y útil. 
-Tienes acceso a búsqueda web y una base de conocimientos.
-Tu objetivo es ayudar al usuario de la manera más completa posible.
-Respondes en español de manera clara y concisa.
-Si no sabes algo, admítelo honestamente.`;
+    this.systemPrompt = `Eres JARVIS, un asistente de IA util y conversacional.
+Eres amigable, servicial y respondes de manera directa.
+
+REGLAS IMPORTANTES:
+1. NUNCA muestres tu proceso de razonamiento interno
+2. NUNCA digas "segun la informacion" o "basandome en..."
+3. NUNCA menciones que eres un modelo de IA
+4. Simplemente da la respuesta de manera natural
+5. Responde en espanol de forma clara y directa
+6. Si no sabes algo, responde honestamente`;
   }
   
   async think(prompt, context = {}) {
@@ -50,7 +55,7 @@ Si no sabes algo, admítelo honestamente.`;
     
     // Agregar contexto de la conversación
     if (context.history && context.history.length > 0) {
-      prompt += 'Conversación previa:\n';
+      prompt += 'Conversacion previa:\n';
       context.history.slice(-5).forEach(msg => {
         prompt += `${msg.role === 'user' ? 'Usuario' : 'JARVIS'}: ${msg.content}\n`;
       });
@@ -59,9 +64,9 @@ Si no sabes algo, admítelo honestamente.`;
     
     // Agregar información de búsqueda si existe
     if (context.searchResults && context.searchResults.length > 0) {
-      prompt += 'Información encontrada:\n';
+      prompt += 'Informacion encontrada:\n';
       context.searchResults.forEach((result, i) => {
-        prompt += `${i + 1}. ${result.title}: ${result.content}\n`;
+        prompt += `- ${result.title}: ${result.content}\n`;
       });
       prompt += '\n';
     }
@@ -75,7 +80,10 @@ Si no sabes algo, admítelo honestamente.`;
       prompt += '\n';
     }
     
-    prompt += `Usuario: ${userPrompt}\nJARVIS:`;
+    // Instrucciones finales
+    prompt += `Usuario: ${userPrompt}\n\n`;
+    prompt += `Da una respuesta DIRECTA y conversacional. No menciones las fuentes o "segun". Simplemente responde naturalmente.\n\n`;
+    prompt += `JARVIS: `;
     
     return prompt;
   }

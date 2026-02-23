@@ -98,5 +98,15 @@
     "role": "assistant",
     "content": "Actualmente, según la información disponible, **Real Madrid** era el nuevo líder después de que el FC Barcelona sufriera una derrota ante Girona FC. Sin embargo, también se menciona que **FC Barcelona** recuperó el liderato al ganar 3-0 a Levante UD.\n\nPara obtener la información más actualizada y precisa, te recomiendo consultar directamente las fuentes oficiales como [LaLiga Santander](https://www.laliga.com/) o portales deportivos confiables como ESPN.",
     "timestamp": "2026-02-23T17:10:30.925Z"
+  },
+  {
+    "role": "user",
+    "content": "Jarvis, quien va de primero en la liga colombiana de futbol?",
+    "timestamp": "2026-02-23T17:18:48.729Z"
+  },
+  {
+    "role": "assistant",
+    "content": "Para saber quién lidera actualmente la Liga Colombiana de Fútbol Masculina 2026, te recomiendo consultar directamente en [ESPN Deportes](https://www.espn.com) o en la página oficial de la [Liga BetPlay Dimayor](https://dimayor.com). Estas fuentes tienen la información más actualizada y detallada. Si necesitas ayuda con algo más, no dudes en preguntar.",
+    "timestamp": "2026-02-23T17:18:48.730Z"
   }
 ]
