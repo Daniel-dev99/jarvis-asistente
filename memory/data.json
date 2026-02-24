@@ -158,5 +158,15 @@
     "role": "assistant",
     "content": "Desafortunadamente, con la información proporcionada, no se puede determinar claramente quién va de primero en la Liga Colombiana de Fútbol Masculina 2026. Se observan posiciones de equipos como Deportivo Pasto, Atlético Bucaramanga y Atlético Nacional, pero el primer lugar no está detallado.\n\nTe recomiendo consultar directamente las fuentes como ESPN DEPORTES o la página oficial de la Liga BetPlay Dimayor para obtener la información actualizada.",
     "timestamp": "2026-02-24T00:07:41.820Z"
+  },
+  {
+    "role": "user",
+    "content": "Jarvis, quien va de primero en la liga colombiana de futbol?",
+    "timestamp": "2026-02-24T00:18:10.796Z"
+  },
+  {
+    "role": "assistant",
+    "content": "Lo siento, no tengo acceso a la información en tiempo real de la Liga Colombiana de Fútbol. Sin embargo, equipos como Atlético Nacional, Junior de Barranquilla, Deportivo Medellín y América de Cali suelen estar en las primeras posiciones. Para obtener la actualización más reciente, te recomendaría consultar ESPN o Gol Caracol.",
+    "timestamp": "2026-02-24T00:18:10.798Z"
   }
 ]

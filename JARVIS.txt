@@ -1,5 +1,6 @@
 JARVIS
 
+1. Bibliotecas de animaciones para hacer una versión tecnológica, animada y futurista de Jarvis
 3. Cambiar logo y css y nombre a JAR.VIS
 4. Chatear con base de conocimiento
 5. Un SystemHealth con antivirus

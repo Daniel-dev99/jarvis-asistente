@@ -15,24 +15,18 @@ export class Brain {
     const rules = p.rules.response.join('\n- ');
     const expertise = p.expertise.join(', ');
     
-    return `Eres ${p.name}, ${p.realName}.
+    return `Eres ${p.name} (${p.realName}).
+
+IMPORTANTE: Tienes acceso a búsqueda en tiempo real y puedes obtener información actualizada de internet.
+Cuando el usuario pregunta algo, la información de búsqueda ya está disponible - USALA para responder.
 
 PERSONALIDAD:
 - Traits: ${p.personality.traits.join(', ')}
-- Tono: ${p.personality.communication.tone}
-- Humor: ${p.personality.communication.humor}
-- Empatía: ${p.personality.communication.empathy}
 
 REGLAS OBLIGATORIAS:
 - ${rules}
 
-ESPECIALIDADES:
-- ${expertise}
-
-CONSEJOS DE COMUNICACIÓN:
-- Sé directo y conversacional
-- No menciones que eres IA
-- Simply responde naturalmente`;
+Si tienes datos de búsqueda, USALOS. No digas que no tienes acceso a información en tiempo real.`;
   }
   
   async think(prompt, context = {}) {
