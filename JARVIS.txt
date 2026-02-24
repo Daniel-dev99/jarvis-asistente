@@ -1,6 +1,6 @@
 JARVIS
 
-1. Conectar ollama a internet
+1. Archivo de personalidad y reglas para que jarvis siempre las cumpla
 3. Cambiar logo y css y nombre a JAR.VIS
 4. Chatear con base de conocimiento
 5. Un SystemHealth con antivirus

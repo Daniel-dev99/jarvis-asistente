@@ -1,7 +1,12 @@
 // Configuración del asistente JARVIS
+import personality from './personality.js';
+
 export default {
   // Servidor
   port: process.env.PORT || 3000,
+  
+  // Personalidad de JARVIS
+  personality,
   
   // API de Tavily para búsqueda web
   tavily: {

@@ -1,21 +1,38 @@
 // JARVIS - Cerebro de IA usando Ollama
 import fetch from 'node-fetch';
+import personality from '../config/personality.js';
 
 export class Brain {
   constructor(options = {}) {
     this.model = options.model || 'deepseek-r1:32b';
     this.baseUrl = options.baseUrl || 'http://localhost:11434';
     this.temperature = options.temperature || 0.7;
-    this.systemPrompt = `Eres JARVIS, un asistente de IA util y conversacional.
-Eres amigable, servicial y respondes de manera directa.
+    this.systemPrompt = this.buildSystemPrompt();
+  }
+  
+  buildSystemPrompt() {
+    const p = personality;
+    const rules = p.rules.response.join('\n- ');
+    const expertise = p.expertise.join(', ');
+    
+    return `Eres ${p.name}, ${p.realName}.
 
-REGLAS IMPORTANTES:
-1. NUNCA muestres tu proceso de razonamiento interno
-2. NUNCA digas "segun la informacion" o "basandome en..."
-3. NUNCA menciones que eres un modelo de IA
-4. Simplemente da la respuesta de manera natural
-5. Responde en espanol de forma clara y directa
-6. Si no sabes algo, responde honestamente`;
+PERSONALIDAD:
+- Traits: ${p.personality.traits.join(', ')}
+- Tono: ${p.personality.communication.tone}
+- Humor: ${p.personality.communication.humor}
+- Empatía: ${p.personality.communication.empathy}
+
+REGLAS OBLIGATORIAS:
+- ${rules}
+
+ESPECIALIDADES:
+- ${expertise}
+
+CONSEJOS DE COMUNICACIÓN:
+- Sé directo y conversacional
+- No menciones que eres IA
+- Simply responde naturalmente`;
   }
   
   async think(prompt, context = {}) {
