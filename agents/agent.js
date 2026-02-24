@@ -110,12 +110,10 @@ Responde de manera breve y directa.`;
     // Hacer que el cerebro piense con toda la información
     const prompt = `Usuario pregunta: "${query}"
 
-${searchResults.length > 0 ? `Resultados de busqueda:
-${searchResults.map(r => `- ${r.title}: ${r.content}`).join('\n')}` : 'No hay resultados de busqueda.'}
+${searchResults.length > 0 ? `DATOS ENCONTRADOS:
+${searchResults.map(r => `${r.title}: ${r.content}`).join('\n\n')}` : 'No hay datos.'}
 
-${context.history && context.history.length > 0 ? `Contexto: ${context.history.slice(-2).map(m => `${m.role === 'user' ? 'Usuario' : 'JARVIS'}: ${m.content}`).join('\n')}` : ''}
-
-Da la respuesta directamente usando los resultados. No digas "segun", "basado en", o muestres tu razonamiento. Simplemente responde.`;
+El usuario espera una RESPUESTA DIRECTA. No digas "deberias buscar", "te recomiendo investigar", "puedes encontrar", etc. Simply дай la respuesta.`;
 
     let response = await this.brain.think(prompt, context);
     
